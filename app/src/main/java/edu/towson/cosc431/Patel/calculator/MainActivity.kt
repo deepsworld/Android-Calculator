@@ -5,15 +5,19 @@ import android.os.Bundle
 import android.widget.GridView
 import kotlinx.android.synthetic.main.activity_main.*
 import android.R.attr.button
+import android.R.attr.fastScrollPreviewBackgroundLeft
 
 class MainActivity : AppCompatActivity() {
 
     var decimalValue = false
+   // var op1 = " "
+    // var op2 = " "
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         disableButtons()
+
 
         equalBtn.setOnClickListener{ calculateResult()}
         oneBtn.setOnClickListener { addOne() }
@@ -44,14 +48,19 @@ class MainActivity : AppCompatActivity() {
     private fun addDot() {
         addToDisplay(".")
         decimalValue = true
+        disableButtons()
     }
 
     private fun addDivide() {
         addToDisplay("/")
+        //op1 = display.editableText.toString()
+        //clearDisplay()
+        disableButtons()
     }
 
     private fun addMultiply() {
         addToDisplay("*")
+        disableButtons()
     }
 
     private fun addSub() {
@@ -60,6 +69,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun addAdd() {
         addToDisplay("+")
+        disableButtons()
     }
 
     private fun addZero() {
@@ -123,6 +133,10 @@ class MainActivity : AppCompatActivity() {
             child.setEnabled(false)
         }
         subBtn.isEnabled = true
+        dotBtn.isEnabled = false
+    }
+    private fun disableEqualButton(){
+        equalBtn.isEnabled = false
     }
 
     private fun enableButtons(){
@@ -130,11 +144,14 @@ class MainActivity : AppCompatActivity() {
             val child = linearLayout2.getChildAt(i)
             child.setEnabled(true)
         }
+        dotBtn.isEnabled = true
 
     }
 
+    // when equal button is clicked
     private fun calculateResult(){
         // get the input String from the edit text
+        //op2 = display.editableText.toString()
         val inputString = display.editableText.toString()
         var result: String?
         if(inputString.isEmpty())
@@ -142,6 +159,7 @@ class MainActivity : AppCompatActivity() {
             result = "Enter value"
         }
         else {
+
             var op = inputString.split("+","/","*")
             var op1 = inputString.split("-","+","/","*")
             var op2 = inputString.split("-")
@@ -153,7 +171,12 @@ class MainActivity : AppCompatActivity() {
                         result = (multiply(op[0].toDouble(),op[1].toDouble())).toString()
                     }
                     else if(inputString.contains("/")){
-                        result = (divide(op[0].toDouble(),op[1].toDouble())).toString()
+                        if(op[1].toDouble() == 0.0){
+                            result = "Error"
+                        }
+                        else {
+                            result = (divide(op[0].toDouble(), op[1].toDouble())).toString()
+                        }
                     }
                     else {
                         if (inputString[0].toString().equals("-")){
@@ -173,7 +196,12 @@ class MainActivity : AppCompatActivity() {
                         result = (multiply(op[0].toInt(),op[1].toInt())).toString()
                     }
                     else if(inputString.contains("/")){
-                        result = (divide(op[0].toDouble(),op[1].toDouble())).toString()
+                        if(op[1].toInt() == 0){
+                            result = "Error"
+                        }
+                        else {
+                            result = (divide(op[0].toDouble(), op[1].toDouble())).toString()
+                        }
                     }
                     else {
                         if (inputString[0].toString().equals("-")){
@@ -208,12 +236,7 @@ class MainActivity : AppCompatActivity() {
         return num1 * num2
     }
     private fun divide(num1: Double, num2: Double): Double?{
-        try {
-           return num1/num2
-       }
-        catch (e: IllegalArgumentException){
-            return null
-        }
+        return num1/num2
     }
 
 
