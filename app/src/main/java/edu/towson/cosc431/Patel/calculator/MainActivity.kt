@@ -10,14 +10,13 @@ import android.R.attr.fastScrollPreviewBackgroundLeft
 class MainActivity : AppCompatActivity() {
 
     var decimalValue = false
-   // var op1 = " "
-    // var op2 = " "
+    var operator1 = " "
+    var operator2 = " "
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         disableButtons()
-
 
         equalBtn.setOnClickListener{ calculateResult()}
         oneBtn.setOnClickListener { addOne() }
@@ -42,7 +41,7 @@ class MainActivity : AppCompatActivity() {
     private fun clearDisplay() {
         display.text = null
         decimalValue = false
-        disableButtons()
+        //disableButtons()
     }
 
     private fun addDot() {
@@ -53,8 +52,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun addDivide() {
         addToDisplay("/")
-        //op1 = display.editableText.toString()
-        //clearDisplay()
+        operator1 = display.editableText.toString()
+        clearDisplay()
         disableButtons()
     }
 
@@ -69,6 +68,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun addAdd() {
         addToDisplay("+")
+        operator1 = display.editableText.toString()
+        clearDisplay()
         disableButtons()
     }
 
@@ -151,21 +152,21 @@ class MainActivity : AppCompatActivity() {
     // when equal button is clicked
     private fun calculateResult(){
         // get the input String from the edit text
-        //op2 = display.editableText.toString()
-        val inputString = display.editableText.toString()
+        operator2 = display.editableText.toString()
         var result: String?
-        if(inputString.isEmpty())
+        if(operator1.isEmpty() || operator2.isEmpty())
         {
             result = "Enter value"
         }
         else {
 
-            var op = inputString.split("+","/","*")
-            var op1 = inputString.split("-","+","/","*")
-            var op2 = inputString.split("-")
+            var op = " "//inputString.split("+","/","*")
+            var op1 = " "//inputString.split("-","+","/","*")
+            var op2 = " "//inputString.split("-")
                 if(decimalValue){
                     if(inputString.contains("+")){
                         result = (add(op[0].toDouble(),op[1].toDouble())).toString()
+                        result = operator2
                     }
                     else if(inputString.contains("*")){
                         result = (multiply(op[0].toDouble(),op[1].toDouble())).toString()
@@ -175,7 +176,7 @@ class MainActivity : AppCompatActivity() {
                             result = "Error"
                         }
                         else {
-                            result = (divide(op[0].toDouble(), op[1].toDouble())).toString()
+                            result = (divide(operator1.toDouble(), operator2.toDouble())).toString()
                         }
                     }
                     else {
